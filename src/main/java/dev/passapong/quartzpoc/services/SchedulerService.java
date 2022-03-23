@@ -1,5 +1,10 @@
 package dev.passapong.quartzpoc.services;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -7,6 +12,7 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +40,27 @@ public class SchedulerService {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
             LOG.error(e.getMessage(), e);
+        }
+    }
+
+    public List<TimerInfo> getAllRunningTimers() {
+        try {
+            return scheduler.getJobKeys(GroupMatcher.anyGroup())
+                    .stream()
+                    .map(jobKey -> {
+                        try {
+                            final JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+                            return (TimerInfo) jobDetail.getJobDataMap().get(jobKey.getName());
+                        } catch (final SchedulerException e) {
+                            LOG.error(e.getMessage(), e);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        } catch (final SchedulerException e) {
+            LOG.error(e.getMessage(), e);
+            return Collections.emptyList();
         }
     }
 

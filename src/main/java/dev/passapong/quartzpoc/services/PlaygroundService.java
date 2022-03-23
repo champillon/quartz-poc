@@ -1,5 +1,7 @@
 package dev.passapong.quartzpoc.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,10 @@ public class PlaygroundService {
         info.callbackData = ("My callback data");
 
         scheduler.schedule(HelloWorldJob.class, info);
+    }
+
+    public List<TimerInfo> getAllRunningTimers() {
+        return scheduler.getAllRunningTimers();
     }
     
 }

@@ -1,10 +1,13 @@
 package dev.passapong.quartzpoc.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.passapong.quartzpoc.entities.TimerInfo;
 import dev.passapong.quartzpoc.services.PlaygroundService;
 
 @RestController
@@ -22,5 +25,10 @@ public class PlaygroundController {
     public void runHelloWorld() {
         service.runHelloWorld();
     } 
+
+    @GetMapping
+    public List<TimerInfo> getAllRunningTimers() {
+        return service.getAllRunningTimers();
+    }
 
 }
